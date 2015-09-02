@@ -1,4 +1,4 @@
-/***** Ajax Standalone 4.3.0 *****/
+/***** Ajax Standalone 4.3.0-1 *****/
 
 (function (udf){
   //// From Tools ////
@@ -32,17 +32,17 @@
     return new ActiveXObject("Microsoft.XMLHTTP");
   }
   
-  function ajaxstate(f){
+  function ajaxstate(fn, a, o, f){
     var x = ajax();
     x.onreadystatechange = function (){
       if (x.readyState == 4){
         if (x.status == 200){
           f(x.responseText);
         } else if (x.status == 0 || x.status == 12029){
-          if (attempts == 3)err({fn: aget, a: a, f: f, status: x.status});
+          if (attempts == 3)err({fn: fn, a: a, o: o, f: f, status: x.status});
           else setTimeout(inner, 1000);
         } else {
-          err({fn: aget, a: a, f: f, status: x.status});
+          err({fn: fn, a: a, o: o, f: f, status: x.status});
         }
       }
     }
@@ -56,7 +56,7 @@
     if (udfp(f))f = function (){};
     var attempts = 0;
     (function inner(){
-      var x = ajaxstate(f);
+      var x = ajaxstate(aget, a, udf, f);
       x.open("GET", a, true);
       x.send();
       attempts++;
@@ -75,7 +75,7 @@
   function apost3(a, o, f){
     var attempts = 0;
     (function inner(){
-      var x = ajaxstate(f);
+      var x = ajaxstate(apost, a, o, f);
       x.open("POST", a, true);
       x.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
       x.send(o);
